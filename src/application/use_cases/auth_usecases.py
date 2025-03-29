@@ -6,8 +6,8 @@ from fastapi.exceptions import HTTPException
 from config import Settings
 from src.application.use_cases.base import UseCase
 from src.domain.entities import User
-from src.domain.services.auth_service import AuthService
-from src.infrastructure.external.yandex_client import YandexClient
+from src.domain.interfaces import IAuthService
+from src.infrastructure.external.base_client import Client
 from src.infrastructure.models import UserModel
 from src.infrastructure.uow.interfaces import IUnitOfWork
 from src.presentation.routers.schemas import TokenData, UserSchema
@@ -18,8 +18,8 @@ class YandexAuth(UseCase[str, TokenData]):
     def __init__(
             self,
             uow: IUnitOfWork,
-            yandex_client: YandexClient,
-            auth_service: AuthService,
+            yandex_client: Client,
+            auth_service: IAuthService,
             settings: Settings
     ):
         self.uow = uow
@@ -45,7 +45,7 @@ class GetActiveUser(UseCase[HTTPAuthorizationCredentials, UserSchema]):
     def __init__(
             self,
             uow: IUnitOfWork,
-            auth_service: AuthService,
+            auth_service: IAuthService,
     ):
         self.uow = uow
         self.auth_service = auth_service
@@ -67,7 +67,7 @@ class GetSuperuser(UseCase[HTTPAuthorizationCredentials, UserSchema]):
     def __init__(
             self,
             uow: IUnitOfWork,
-            auth_service: AuthService,
+            auth_service: IAuthService,
     ):
         self.uow = uow
         self.auth_service = auth_service

@@ -5,6 +5,7 @@ from fastapi import FastAPI
 
 from config import VERSION
 from src.infrastructure.logger.logger import Logger
+from src.presentation.routers.auth_routers.router import router as auth_router
 
 
 @asynccontextmanager
@@ -21,4 +22,8 @@ app = FastAPI(
     openapi_url=f'/api/v{VERSION}/openapi.json',
     redoc_url=None,
     lifespan=lifespan
+)
+
+app.include_router(
+    auth_router
 )

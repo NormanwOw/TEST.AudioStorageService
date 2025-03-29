@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import Any, TypeVar
+from uuid import UUID
 
+from fastapi import UploadFile
 from sqlalchemy.orm import InstrumentedAttribute
 
 from src.infrastructure.models import Base
@@ -57,3 +59,10 @@ class IUsersRepository(ISQLAlchemyRepository, ABC):
 
 class IFilesRepository(ISQLAlchemyRepository, ABC):
     pass
+
+
+class FilesStorageRepository(ABC):
+
+    @abstractmethod
+    async def save(self, user_id: UUID, file: UploadFile, file_name: str):
+        raise NotImplementedError

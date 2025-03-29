@@ -66,7 +66,8 @@ class FileDependencies:
     uow = UnitOfWork(async_session)
     logger = Logger()
     file_storage_repo = DiskStorageRepository()
+    settings = Settings()
 
     @classmethod
     async def save_file(cls):
-        return SaveFile(cls.uow, cls.file_storage_repo)
+        return SaveFile(cls.uow, cls.file_storage_repo, cls.settings)

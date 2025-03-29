@@ -49,7 +49,10 @@ class ISQLAlchemyRepository(ABC):
 
 
 class IUsersRepository(ISQLAlchemyRepository, ABC):
-    pass
+
+    @abstractmethod
+    async def delete_by_email(self, email: str):
+        raise NotImplementedError
 
 
 class IFilesRepository(ISQLAlchemyRepository, ABC):

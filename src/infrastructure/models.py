@@ -6,6 +6,8 @@ from sqlalchemy import UUID, ForeignKey
 from sqlalchemy.dialects.postgresql import TIMESTAMP
 from sqlalchemy.orm import DeclarativeBase, mapped_column, Mapped, relationship
 
+from src.domain.entities import User, AudioFile
+
 
 class Base(DeclarativeBase):
     id: Mapped[uuid] = mapped_column(
@@ -45,3 +47,20 @@ class UserModel(Base):
         cascade='all, delete-orphan',
         lazy='selectin'
     )
+
+    def to_domain(self) -> User:
+        return User(
+            id=self.id,
+            email=self.email,
+            is_active=self.is_active,
+            is_superuser=self.is_superuser,
+            date_added=self.date_added,
+            files=[
+                AudioFile(
+                    id=file.id,
+                    name=file.name,
+                    path=file.path,
+                    date_added=file.date_added
+                ) for file in self.files
+            ],
+        )

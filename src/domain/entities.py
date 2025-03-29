@@ -1,3 +1,5 @@
+import os
+import shutil
 from datetime import datetime
 from typing import List
 from uuid import UUID
@@ -12,6 +14,12 @@ class User(BaseModel):
     is_superuser: bool
     date_added: datetime
     files: List['AudioFile']
+
+    def delete_files(self):
+        folder_path = f'audio_files/{self.id}'
+        if os.path.exists(folder_path) and os.path.isdir(folder_path):
+            shutil.rmtree(folder_path)
+        self.files.clear()
 
 
 class AudioFile(BaseModel):

@@ -8,7 +8,7 @@ class ILogger(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def error(self, message: str):
+    def error(self, message: str, exc_info=True):
         raise NotImplementedError
 
     @abstractmethod

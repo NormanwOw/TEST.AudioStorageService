@@ -2,7 +2,7 @@ from typing import List
 
 from pydantic_settings import SettingsConfigDict, BaseSettings
 
-DEBUG = True
+DEBUG = False
 
 
 class Settings(BaseSettings):

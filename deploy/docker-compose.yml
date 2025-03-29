@@ -1,0 +1,44 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: always
+    user: "70:70"
+    volumes:
+      - audio_storage_service_data:/var/lib/postgresql/data/
+    env_file:
+      - .env
+    ports:
+      - "5431:5432"
+    networks:
+      - postgres_network
+    container_name: audio_storage_service_postgres
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -d $${POSTGRES_DB} -U $${POSTGRES_USER}" ]
+      interval: 10s
+      timeout: 60s
+      retries: 5
+      start_period: 10s
+
+  app:
+    build:
+      context: ./../
+    image: audio_storage_service:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./../audio_files:/app/audio_files
+    networks:
+      - postgres_network
+    depends_on:
+      - postgres
+    container_name: audio_storage_service
+    command: bash -c "alembic upgrade head && uvicorn src.main:app --host 0.0.0.0 --port 8000"
+
+volumes:
+  audio_storage_service_data: {}
+
+networks:
+  postgres_network: {}

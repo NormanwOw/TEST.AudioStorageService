@@ -7,6 +7,7 @@ from config import Settings
 from src.application.use_cases.base import UseCase
 from src.domain.entities import User
 from src.domain.interfaces import IAuthService
+from src.domain.value_objects import UserData
 from src.infrastructure.external.base_client import Client
 from src.infrastructure.models import UserModel
 from src.infrastructure.uow.interfaces import IUnitOfWork
@@ -82,3 +83,17 @@ class GetSuperuser(UseCase[HTTPAuthorizationCredentials, UserSchema]):
                 raise HTTPException(detail='Permission denied', status_code=403)
 
             return user.to_domain()
+
+
+class UpdateToken(UseCase[User, TokenData]):
+
+    def __init__(self, uow: IUnitOfWork, auth_service: IAuthService, settings: Settings):
+        self.uow = uow
+        self.auth_service = auth_service
+        self.settings = settings
+
+    async def __call__(self, user: User) -> TokenData:
+        return self.auth_service.create_access_token(
+            user_data=UserData(email=user.email),
+            expires_delta=timedelta(minutes=self.settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+        )

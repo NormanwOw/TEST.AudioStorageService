@@ -1,3 +1,5 @@
+from typing import List
+
 from pydantic_settings import SettingsConfigDict, BaseSettings
 
 DEBUG = True
@@ -18,6 +20,13 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     SECRET_KEY: str
     ALGORITHM: str
+
+    CLIENT_ID: str
+    CLIENT_SECRET: str
+    TOKEN_URL: str
+    USER_INFO_URL: str
+    REDIRECT_URL: str
+    ALLOWED_AUDIO_EXTENSIONS: List[str]
 
 
 settings = Settings()

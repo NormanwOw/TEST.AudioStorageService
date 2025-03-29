@@ -6,6 +6,7 @@ from fastapi import FastAPI
 from config import VERSION
 from src.infrastructure.logger.logger import Logger
 from src.presentation.routers.auth_routers.router import router as auth_router
+from src.presentation.routers.user_routers.router import router as user_router
 
 
 @asynccontextmanager
@@ -26,4 +27,7 @@ app = FastAPI(
 
 app.include_router(
     auth_router
+)
+app.include_router(
+    user_router
 )

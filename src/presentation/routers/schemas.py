@@ -8,3 +8,8 @@ class TokenData(BaseModel):
 
 class UserSchema(BaseModel):
     email: str
+
+
+class FileSchema(BaseModel):
+    name: str
+    path: str

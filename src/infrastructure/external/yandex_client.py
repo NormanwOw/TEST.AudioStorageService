@@ -3,9 +3,10 @@ from aiohttp import ClientSession
 
 from config import Settings
 from src.domain.value_objects import UserData
+from src.infrastructure.external.base_client import Client
 
 
-class YandexClient:
+class YandexClient(Client):
 
     def __init__(self, settings: Settings):
         self.settings = settings

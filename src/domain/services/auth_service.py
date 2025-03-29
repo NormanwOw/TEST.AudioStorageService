@@ -7,11 +7,12 @@ from passlib.context import CryptContext
 import jwt
 
 from config import Settings, settings
+from src.domain.interfaces import IAuthService
 from src.domain.value_objects import UserData
 from src.presentation.routers.schemas import UserSchema, TokenData
 
 
-class AuthService:
+class AuthService(IAuthService):
 
     def __init__(self, settings: Settings):
         self.settings = settings
@@ -38,7 +39,9 @@ class AuthService:
 
         return UserSchema(email=email)
 
-    def create_access_token(self, user_data: UserData, expires_delta: timedelta | None = None) -> TokenData:
+    def create_access_token(
+            self, user_data: UserData, expires_delta: timedelta | None = None
+    ) -> TokenData:
         if not expires_delta:
             expires_delta = timedelta(minutes=15)
 

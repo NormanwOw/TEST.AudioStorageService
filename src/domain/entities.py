@@ -1,9 +1,11 @@
 import os
 import shutil
+import uuid
 from datetime import datetime
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 
+from fastapi import UploadFile
 from pydantic import BaseModel
 
 
@@ -27,3 +29,17 @@ class AudioFile(BaseModel):
     name: str
     path: str
     date_added: datetime
+
+    @staticmethod
+    def factory(user_id: UUID, file: UploadFile, file_name: Optional[str]):
+        if file_name:
+            file_name = f'{file_name}.{file.filename.split(".")[-1]}'
+        else:
+            file_name = file.filename
+
+        return AudioFile(
+            id=uuid.uuid4(),
+            name=file_name,
+            path=f'{user_id}/{file_name}',
+            date_added=datetime.utcnow(),
+        )

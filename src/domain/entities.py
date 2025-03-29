@@ -5,8 +5,10 @@ from datetime import datetime
 from typing import List, Optional
 from uuid import UUID
 
-from fastapi import UploadFile
+from fastapi import UploadFile, HTTPException
 from pydantic import BaseModel
+
+from config import Settings
 
 
 class User(BaseModel):
@@ -31,9 +33,12 @@ class AudioFile(BaseModel):
     date_added: datetime
 
     @staticmethod
-    def factory(user_id: UUID, file: UploadFile, file_name: Optional[str]):
+    def factory(
+        user_id: UUID, file: UploadFile, file_name: Optional[str]
+    ) -> 'AudioFile':
+        extension = file.filename.split('.')[-1]
         if file_name:
-            file_name = f'{file_name}.{file.filename.split(".")[-1]}'
+            file_name = f'{file_name}.{extension}'
         else:
             file_name = file.filename
 
@@ -43,3 +48,13 @@ class AudioFile(BaseModel):
             path=f'{user_id}/{file_name}',
             date_added=datetime.utcnow(),
         )
+
+    @staticmethod
+    def check_extension(extension: str, settings: Settings):
+        allowed_extensions = settings.ALLOWED_AUDIO_EXTENSIONS
+        if extension not in allowed_extensions:
+            str_extensions = ', '.join(allowed_extensions)
+            raise HTTPException(
+                status_code=400,
+                detail=f'Allowed audio file extensions are {str_extensions}',
+            )

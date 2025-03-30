@@ -16,7 +16,10 @@ router = APIRouter(
 )
 
 
-@router.patch('')
+@router.patch(
+    path='',
+    summary='Обновление личных данных'
+)
 async def update_user(
     new_user_data: UserData,
     user: Annotated[User, Depends(AuthDependencies.get_active_user)],
@@ -25,7 +28,12 @@ async def update_user(
     return await update_user(user, new_user_data)
 
 
-@router.delete('/{email}', dependencies=[Depends(AuthDependencies.get_superuser)])
+@router.delete(
+    path='/{email}',
+    summary='Удаление пользователя',
+    dependencies=[Depends(AuthDependencies.get_superuser)],
+    status_code=204
+)
 async def delete_user(
     email: str,
     delete_user: Annotated[DeleteUser, Depends(UserDependencies.delete_user)]

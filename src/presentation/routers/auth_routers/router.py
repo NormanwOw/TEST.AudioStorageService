@@ -15,7 +15,12 @@ router = APIRouter(
 )
 
 
-@router.get('/yandex')
+@router.get(
+    path='/yandex',
+    summary='Регистрация',
+    description='Эндпоинт, получающий код от Яндекса. Регистрирует '
+                'пользователя в системе, возвращает внутренний JWT токен'
+)
 async def auth_callback(
     code: str,
     auth: Annotated[YandexAuth, Depends(AuthDependencies.get_auth)],
@@ -23,7 +28,10 @@ async def auth_callback(
     return await auth(code)
 
 
-@router.get('/token')
+@router.get(
+    path='/token',
+    summary='Обновление access токена'
+)
 async def update_token(
         user: Annotated[User, Depends(AuthDependencies.get_active_user)],
         update_token: Annotated[UpdateToken, Depends(AuthDependencies.update_token)],
@@ -31,7 +39,10 @@ async def update_token(
     return await update_token(user)
 
 
-@router.get('/me')
+@router.get(
+    path='/me',
+    summary='Получение своих данных'
+)
 async def get_me(
         user: Annotated[UserSchema, Depends(AuthDependencies.get_active_user)]
 ) -> UserSchema:

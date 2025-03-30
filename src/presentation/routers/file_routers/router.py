@@ -3,7 +3,7 @@ from typing import Annotated, List
 from fastapi import UploadFile, File, APIRouter, Response
 from fastapi.params import Depends
 
-from config import VERSION
+from config import VERSION, settings
 from src.application.use_cases.file_usecases import SaveFile
 from src.domain.entities import User
 from src.presentation.dependencies import FileDependencies, AuthDependencies
@@ -15,14 +15,21 @@ router = APIRouter(
 )
 
 
-@router.get('')
+@router.get(
+    path='',
+    summary='Получение информации о моих файлах'
+)
 async def get_files_info(
     user: Annotated[User, Depends(AuthDependencies.get_active_user)]
 ) -> List[FileSchema]:
     return user.files
 
 
-@router.post('')
+@router.post(
+    path='',
+    summary=f'Добавление файла. Доступные форматы: {", ".join(settings.ALLOWED_AUDIO_EXTENSIONS)}',
+    status_code=201
+)
 async def upload_audio(
     save_file: Annotated[SaveFile, Depends(FileDependencies.save_file)],
     user: Annotated[User, Depends(AuthDependencies.get_active_user)],
